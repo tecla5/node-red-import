@@ -1,6 +1,7 @@
 # Node-red Docker import
 
 Import [node-red](nodered.org) nodes from a *docker* project
+The docker project can in turn be generated from a node-red project via [docker-gen](https://github.com/tecla5/docker-gen)
 
 ## Install
 
