@@ -15,22 +15,37 @@ test('project to json nodes', async t => {
     return true
   }
 
-  function compareDc(actual, expected) {
+  function createAllSame({
+    item,
+    compare
+  }) {
     function same(key) {
-      console.log('same', key, actual[key], item[key])
-      t.is(actual[key], item[key])
+      // console.log('same', key, actual[key], item[key])
+      t.is(item[key], compare[key])
     }
 
-    function allSame(...keys) {
+    return function allSame(...keys) {
       keys.map(key => same(key))
     }
+  }
 
-    let item = expected.list[0]
-    actual = actual[0]
-    console.log('actual', actual)
-    console.log('item', item)
 
-    allSame('name', 'topic', 'description', 'framework', 'pattern', 'function')
+  function compareDc(actual, expected) {
+    let compareSet = expected.list.map((exp) => {
+      let act = actual.find(e => e.name === exp.name)
+      return {
+        expected: exp,
+        actual: act
+      }
+    });
+    compareSet.map(pair => {
+      let item = pair.actual
+      let compare = pair.expected
+      createAllSame({
+        item,
+        compare
+      })('name', 'topic', 'description', 'framework', 'pattern', 'function')
+    })
   }
 
   compareDc(result.dc, expected)

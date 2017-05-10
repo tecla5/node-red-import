@@ -29,13 +29,23 @@ services:
       API_HOST: 0.0.0.0
       HEMERA_LOG_LEVEL: silent
 
+  my-subtraction:
+    labels:
+      description: Subtraction
+      node-red: true
+      framework: hemera
+      topic: math
+      pattern: "{topic: 'math', cmd: 'sub'}"
+    build:
+      context: "./services/my-subtraction"
+
   my-addition:
     labels:
       description: Addition
       node-red: true
       framework: hemera
       topic: math
-      pattern: "{topic: 'graph', cmd: 'toyaml'}"
+      pattern: "{topic: 'math', cmd: 'add'}"
     build:
       context: "./services/my-addition"
     links:
