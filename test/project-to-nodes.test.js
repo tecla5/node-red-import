@@ -52,7 +52,7 @@ test('project to json nodes', async t => {
       createAllSame({
         item,
         compare
-      })('id', 'name', 'topic', 'description', 'framework', 'pattern', 'function', 'maxMessages')
+      })('id', 'name', 'topic', 'description', 'framework', 'pattern', 'function', 'maxMessages', 'swarmCount')
     })
   }
   console.log('dc', result.dc)

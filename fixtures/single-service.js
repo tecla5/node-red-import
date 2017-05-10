@@ -28,7 +28,7 @@ module.exports = {
     "pattern": "{topic: 'math', cmd: 'sub'}",
     "function": `cb('sub');`,
     "validators": "",
-    "swarmCount": "1",
+    "swarmCount": "2",
     "maxMessages": "",
     "x": 322.27272727272725,
     "y": 260.9090909090909,

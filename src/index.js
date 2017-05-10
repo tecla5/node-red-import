@@ -22,10 +22,13 @@ function createNode(service, name) {
   let labels = service.labels || {}
   let build = service.build
   let filePath = build.context
+  let deploy = service.deploy
+  let swarmCount = deploy ? deploy.replicas : 1
 
   let node = {
     name,
     filePath,
+    swarmCount,
     type: 'sub-match'
   }
   node = props.reduce((acc, key) => {

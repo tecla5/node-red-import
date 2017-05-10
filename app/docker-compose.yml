@@ -39,6 +39,12 @@ services:
       pattern: "{topic: 'math', cmd: 'sub'}"
     build:
       context: "./services/my-subtraction"
+    deploy:
+      mode: replicated
+      replicas: 2
+      labels: [APP=my-subtraction]
+      placement:
+        constraints: [node.role == worker]
 
   my-addition:
     labels:
