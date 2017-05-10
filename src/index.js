@@ -94,8 +94,11 @@ async function populate(dc, services) {
   return dc.map(conf => {
     let serviceMatch = services.find(service => {
       let confPath = conf.filePath.slice(2)
-      let match = new RegExp(confPath).test(service.filePath)
-      return match
+      let folderMatch = new RegExp(confPath).test(service.filePath)
+      let serviceFile = path.basename(service.filePath)
+      let confFile = path.basename(confPath)
+      let fileMatch = (path.extname(confPath) === '') ? serviceFile === 'index.js' : serviceFile === confFile
+      return folderMatch && fileMatch
     })
     conf.function = serviceMatch.content
     return conf
