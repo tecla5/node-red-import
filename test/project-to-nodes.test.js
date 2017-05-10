@@ -21,14 +21,15 @@ test('project to json nodes', async t => {
   }) {
     function same(key) {
       // console.log('same', key, actual[key], item[key])
-      t.is(item[key], compare[key])
+      let a = String(item[key])
+      let b = String(compare[key])
+      t.is(a, b)
     }
 
     return function allSame(...keys) {
       keys.map(key => same(key))
     }
   }
-
 
   function compareDc(actual, expected) {
     let compareSet = expected.list.map((exp) => {
@@ -44,9 +45,10 @@ test('project to json nodes', async t => {
       createAllSame({
         item,
         compare
-      })('name', 'topic', 'description', 'framework', 'pattern', 'function')
+      })('name', 'topic', 'description', 'framework', 'pattern', 'function', 'maxMessages')
     })
   }
+  console.log('dc', result.dc)
 
   compareDc(result.dc, expected)
   compareServices(result.services, expected)

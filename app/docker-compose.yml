@@ -45,6 +45,7 @@ services:
       node-red: true
       framework: hemera
       topic: math
+      maxMessages: 5
       pattern: "{topic: 'math', cmd: 'add'}"
     build:
       context: "./services/my-addition"

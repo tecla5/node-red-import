@@ -11,7 +11,7 @@ module.exports = {
     "function": `cb('add');`,
     "validators": "",
     "swarmCount": "1",
-    "maxMessages": "",
+    "maxMessages": "5",
     "x": 322.27272727272725,
     "y": 260.9090909090909,
     "wires": [

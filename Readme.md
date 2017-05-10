@@ -2,7 +2,47 @@
 
 Import [node-red](nodered.org) nodes from a *docker* project
 
-## Requirements
+## Install
+
+`npm i`
+
+## Run tests
+
+`ava`
+
+## Usage
+
+```js
+  let projectPath = path.resolve(baseDir, 'app')
+  let result = await generate({
+    path: projectPath
+  })
+```
+
+## node-red nodes
+
+```js
+[ { name: 'my-subtraction',
+    filePath: './services/my-subtraction',
+    type: 'sub-match',
+    topic: 'math',
+    framework: 'hemera',
+    description: 'Subtraction',
+    pattern: '{topic: \'math\', cmd: \'sub\'}',
+    function: 'cb(\'sub\');',
+    maxMessages: '' },
+  { name: 'my-addition',
+    filePath: './services/my-addition',
+    type: 'sub-match',
+    topic: 'math',
+    framework: 'hemera',
+    description: 'Addition',
+    pattern: '{topic: \'math\', cmd: \'add\'}',
+    function: 'cb(\'add\');',
+    maxMessages: 5 } ]
+```
+
+## docker-compose.yml
 
 Requires each node-red service to have specific labels:
 
@@ -20,24 +60,16 @@ services:
       node-red: true
       framework: hemera
       topic: math
-      pattern: "{topic: 'graph', cmd: 'toyaml'}"
-      function: "cb('hello world');"
+      maxMessages: 5
+      pattern: "{topic: 'math', cmd: 'add'}"
     build:
       context: "./services/my-addition"
-
 ```
 
-## Install
+## Service function
 
-`npm i`
-
-## Run tests
-
-`ava`
-
-## TODO
-
-Parse actual service located in `build.context` (such as `./services/my-addition` above)
+Parses service logic located at path referenced by `build.context`.
+`context: "./services/my-addition"` resolved to file at `./services/my-addition/index.js`
 
 ## License
 
