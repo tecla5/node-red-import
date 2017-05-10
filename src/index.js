@@ -143,7 +143,7 @@ async function generate(config = {}) {
 
 async function generateJson(config) {
   let result = await generate(config)
-  return JSON.stringify(result.dc)
+  return JSON.stringify(result.dc, null, 2)
 }
 
 module.exports = {

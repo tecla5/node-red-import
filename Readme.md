@@ -13,13 +13,19 @@ Import [node-red](nodered.org) nodes from a *docker* project
 ## Usage
 
 ```js
-  let projectPath = path.resolve(baseDir, 'app')
-  let result = await generate({
-    path: projectPath
-  })
+import { generate, generateJson } from 'node-red-import'
+
+let projectPath = path.resolve(baseDir, 'app')
+let result = await generate({
+  path: projectPath
+})
+
+console.log(result)
 ```
 
 ## node-red nodes
+
+### generate
 
 ```js
 [ { name: 'my-subtraction',
@@ -30,7 +36,10 @@ Import [node-red](nodered.org) nodes from a *docker* project
     description: 'Subtraction',
     pattern: '{topic: \'math\', cmd: \'sub\'}',
     function: 'cb(\'sub\');',
-    maxMessages: '' },
+    maxMessages: '',
+    x: 120,
+    y: 70
+  },
   { name: 'my-addition',
     filePath: './services/my-addition',
     type: 'sub-match',
@@ -39,7 +48,45 @@ Import [node-red](nodered.org) nodes from a *docker* project
     description: 'Addition',
     pattern: '{topic: \'math\', cmd: \'add\'}',
     function: 'cb(\'add\');',
-    maxMessages: 5 } ]
+    maxMessages: 5,
+    x: 220,
+    y: 120
+  } ]
+```
+
+### generateJson
+
+```js
+[
+  {
+    "name": "my-subtraction",
+    "filePath": "./services/my-subtraction",
+    "type": "sub-match",
+    "id": "da8d9fae.39951",
+    "topic": "math",
+    "framework": "hemera",
+    "description": "Subtraction",
+    "pattern": "{topic: 'math', cmd: 'sub'}",
+    "function": "cb('sub');",
+    "maxMessages": "",
+    "x": 120,
+    "y": 70
+  },
+  {
+    "name": "my-addition",
+    "filePath": "./services/my-addition",
+    "type": "sub-match",
+    "id": "da8d9fae.39952",
+    "topic": "math",
+    "framework": "hemera",
+    "description": "Addition",
+    "pattern": "{topic: 'math', cmd: 'add'}",
+    "function": "cb('add');",
+    "maxMessages": 5,
+    "x": 220,
+    "y": 120
+  }
+]
 ```
 
 ## docker-compose.yml
