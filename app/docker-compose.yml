@@ -31,6 +31,7 @@ services:
 
   my-subtraction:
     labels:
+      id: "da8d9fae.39951"
       description: Subtraction
       node-red: true
       framework: hemera
@@ -41,6 +42,7 @@ services:
 
   my-addition:
     labels:
+      id: "da8d9fae.39952"
       description: Addition
       node-red: true
       framework: hemera

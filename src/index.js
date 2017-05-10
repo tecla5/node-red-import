@@ -16,7 +16,7 @@ function isNodeRedService(entry) {
   return labels && labels['node-red']
 }
 
-const props = ['topic', 'framework', 'description', 'pattern', 'function', 'maxMessages']
+const props = ['id', 'topic', 'framework', 'description', 'pattern', 'function', 'maxMessages']
 
 function createNode(service, name) {
   let labels = service.labels || {}
