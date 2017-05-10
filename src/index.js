@@ -91,6 +91,10 @@ function flat(data) {
 }
 
 async function populate(dc, services) {
+  let x = 20,
+    dx = 100
+  let y = 20,
+    dy = 50
   return dc.map(conf => {
     let serviceMatch = services.find(service => {
       let confPath = conf.filePath.slice(2)
@@ -100,12 +104,16 @@ async function populate(dc, services) {
       let fileMatch = (path.extname(confPath) === '') ? serviceFile === 'index.js' : serviceFile === confFile
       return folderMatch && fileMatch
     })
+    x = x + dx
+    y = y + dy
+    conf.x = x
+    conf.y = y
     conf.function = serviceMatch.content
     return conf
   })
 }
 
-module.exports = async function (config = {}) {
+async function generate(config = {}) {
   if (!config.path) {
     throw Error('Requires path option in config object')
   }
@@ -131,4 +139,14 @@ module.exports = async function (config = {}) {
     }
   }
   return {}
+}
+
+async function generateJson(config) {
+  let result = await generate(config)
+  return JSON.stringify(result.dc)
+}
+
+module.exports = {
+  generate,
+  generateJson
 }

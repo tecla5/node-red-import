@@ -1,12 +1,19 @@
 import path from 'path'
 import test from 'ava'
-import generate from '../src'
+import {
+  generate,
+  generateJson
+} from '../src'
 import expected from '../fixtures/single-service'
 
 test('project to json nodes', async t => {
   let baseDir = process.cwd() || __dirname
   let projectPath = path.resolve(baseDir, 'app')
   let result = await generate({
+    path: projectPath
+  })
+
+  let json = await generateJson({
     path: projectPath
   })
 
@@ -49,6 +56,7 @@ test('project to json nodes', async t => {
     })
   }
   console.log('dc', result.dc)
+  console.log('json', json)
 
   compareDc(result.dc, expected)
   compareServices(result.services, expected)
