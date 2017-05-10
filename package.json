@@ -1,0 +1,51 @@
+{
+  "name": "node-red-import",
+  "version": "1.0.0",
+  "description": "node-red project importer",
+  "main": "index.js",
+  "scripts": {
+    "test": "ava",
+    "watch": "npm test -- --watch"
+  },
+  "keywords": [
+    "node-red",
+    "import",
+    "nodes",
+    "docker"
+  ],
+  "author": "Kristian Mandrup",
+  "license": "ISC",
+  "devDependencies": {
+    "ava": "^0.19.1",
+    "babel-core": "^6.24.1",
+    "babel-polyfill": "^6.23.0",
+    "babel-preset-env": "^1.4.0",
+    "babel-register": "^6.24.1"
+  },
+  "dependencies": {
+    "fs-extra": "^3.0.1",
+    "node-dir": "^0.1.16",
+    "read-yaml-promise": "^1.0.2",
+    "readdir-recursive-promise": "0.0.1"
+  },
+  "babel": {
+    "presets": [
+      "env"
+    ]
+  },
+  "ava": {
+    "source": [
+      "src/**/*.js"
+    ],
+    "concurrency": 5,
+    "failFast": true,
+    "failWithoutAssertions": false,
+    "tap": true,
+    "powerAssert": false,
+    "require": [
+      "babel-register",
+      "babel-polyfill"
+    ],
+    "babel": "inherit"
+  }
+}
