@@ -24,6 +24,7 @@
   },
   "dependencies": {
     "fs-extra": "^3.0.1",
+    "lodash": "^4.17.4",
     "node-dir": "^0.1.16",
     "read-yaml-promise": "^1.0.2",
     "readdir-recursive-promise": "0.0.1"

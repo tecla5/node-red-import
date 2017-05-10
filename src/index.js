@@ -2,6 +2,7 @@ const rdr = require('readdir-recursive-promise')
 const fs = require('fs-extra')
 const path = require('path')
 const readYaml = require('read-yaml-promise')
+// const _ = require('lodash')
 
 async function filesAt(projectPath) {
   try {
@@ -16,16 +17,15 @@ function isNodeRedService(entry) {
   return labels && labels['node-red']
 }
 
+const props = ['topic', 'framework', 'description', 'pattern', 'function']
+
 function createNode(service, name) {
   let labels = service.labels || {}
   let node = {
     name,
     type: 'sub-match'
-    // topic: labels.topic,
-    // framework: labels.framework,
-    // description: labels.description || ''
   }
-  node = ['topic', 'framework', 'description', 'pattern', 'function'].reduce((acc, key) => {
+  node = props.reduce((acc, key) => {
     node[key] = labels[key] || ''
     return node
   }, node)
@@ -37,21 +37,15 @@ function createNode(service, name) {
 async function filterServices(services) {
   return Object.keys(services).reduce((acc, key) => {
     let entry = services[key]
-
-    // console.log('labels', key, entry.labels)
     if (isNodeRedService(entry)) {
-      // console.log('set acc', key, entry)
-      // acc[key] =
       let node = createNode(entry, key)
       acc.push(node)
     }
-    // console.log('acc', acc)
     return acc
   }, [])
 }
 
 async function readCompose(filePath) {
-  // await fs.readFile
   let obj = await readYaml(filePath)
   let services = obj.services
   return services ? await filterServices(services) : {}
@@ -63,23 +57,57 @@ async function parseDc({
   return await readCompose(filePath)
 }
 
+
+function filterServiceFiles(files, filePath) {
+  function reducer(acc, file) {
+    if (file.files) {
+      let results = filterServiceFiles(file.files, file.path)
+      acc = acc.concat(results)
+    } else if (file.size && filePath && /\/services\//.test(filePath)) {
+      let matches = filePath.match(/\/services\/(.+)/)
+      let service
+      console.log('matches', matches)
+      if (matches) {
+        service = matches[1]
+      }
+      let fullPath = path.join(filePath, file.name)
+      let content = fs.readFileSync(fullPath, 'utf8')
+      acc = acc.concat({
+        service,
+        content,
+        name: file.name,
+        path: fullPath
+      })
+    }
+    return acc
+  }
+  return files.reduce(reducer, [])
+}
+
+function flat(data) {
+  return data.reduce((r, e) => Array.isArray(e) ? r = r.concat(flat(e)) : r.push(e) && r, [])
+}
+
 module.exports = async function (config = {}) {
   if (!config.path) {
     throw Error('Requires path option in config object')
   }
   const projectPath = config.path
-  // console.log(projectPath)
   let project = await filesAt(projectPath)
   let dockerCompose = project.files.filter(file =>
     /^docker-compose.ya?ml$/.test(file.name)
   )
+
+  let services = filterServiceFiles(project.files)
+  console.log('services', services)
   if (dockerCompose) {
     dockerCompose = dockerCompose[0]
     let filePath = path.join(projectPath, dockerCompose.name)
     return {
       dc: await parseDc({
         filePath
-      })
+      }),
+      services
     }
   }
   return {}
