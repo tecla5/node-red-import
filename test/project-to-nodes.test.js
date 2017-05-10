@@ -3,7 +3,6 @@ import test from 'ava'
 import generate from '../src'
 import expected from '../fixtures/single-service'
 
-
 test('project to json nodes', async t => {
   let baseDir = process.cwd() || __dirname
   let projectPath = path.resolve(baseDir, 'app')

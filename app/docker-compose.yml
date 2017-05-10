@@ -36,7 +36,6 @@ services:
       framework: hemera
       topic: math
       pattern: "{topic: 'graph', cmd: 'toyaml'}"
-      function: "cb('hello world');"
     build:
       context: "./services/my-addition"
     links:

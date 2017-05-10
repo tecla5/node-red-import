@@ -2,7 +2,6 @@ const rdr = require('readdir-recursive-promise')
 const fs = require('fs-extra')
 const path = require('path')
 const readYaml = require('read-yaml-promise')
-// const _ = require('lodash')
 
 async function filesAt(projectPath) {
   try {
@@ -21,8 +20,12 @@ const props = ['topic', 'framework', 'description', 'pattern', 'function']
 
 function createNode(service, name) {
   let labels = service.labels || {}
+  let build = service.build
+  let filePath = build.context
+
   let node = {
     name,
+    filePath,
     type: 'sub-match'
   }
   node = props.reduce((acc, key) => {
@@ -57,7 +60,6 @@ async function parseDc({
   return await readCompose(filePath)
 }
 
-
 function filterServiceFiles(files, filePath) {
   function reducer(acc, file) {
     if (file.files) {
@@ -66,18 +68,18 @@ function filterServiceFiles(files, filePath) {
     } else if (file.size && filePath && /\/services\//.test(filePath)) {
       let matches = filePath.match(/\/services\/(.+)/)
       let service
-      console.log('matches', matches)
       if (matches) {
         service = matches[1]
       }
       let fullPath = path.join(filePath, file.name)
       let content = fs.readFileSync(fullPath, 'utf8')
-      acc = acc.concat({
+      let node = {
         service,
         content,
         name: file.name,
-        path: fullPath
-      })
+        filePath: fullPath
+      }
+      acc = acc.concat(node)
     }
     return acc
   }
@@ -86,6 +88,18 @@ function filterServiceFiles(files, filePath) {
 
 function flat(data) {
   return data.reduce((r, e) => Array.isArray(e) ? r = r.concat(flat(e)) : r.push(e) && r, [])
+}
+
+async function populate(dc, services) {
+  return dc.map(conf => {
+    let serviceMatch = services.find(service => {
+      let confPath = conf.filePath.slice(2)
+      let match = new RegExp(confPath).test(service.filePath)
+      return match
+    })
+    conf.function = serviceMatch.content
+    return conf
+  })
 }
 
 module.exports = async function (config = {}) {
@@ -99,14 +113,17 @@ module.exports = async function (config = {}) {
   )
 
   let services = filterServiceFiles(project.files)
-  console.log('services', services)
+  // console.log('services', services)
   if (dockerCompose) {
     dockerCompose = dockerCompose[0]
     let filePath = path.join(projectPath, dockerCompose.name)
+    let dc = await parseDc({
+      filePath
+    })
+    dc = await populate(dc, services)
+    // console.log('dc', dc)
     return {
-      dc: await parseDc({
-        filePath
-      }),
+      dc,
       services
     }
   }
